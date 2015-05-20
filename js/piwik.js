@@ -2300,7 +2300,10 @@ if (typeof Piwik !== 'object') {
                 hash = sha1,
 
                 // Domain hash value
-                domainHash;
+                domainHash,
+
+                // Cache for events
+                listEventToBulk = [];
 
             /*
              * Set cookie value
@@ -5177,9 +5180,6 @@ if (typeof Piwik !== 'object') {
                     });
                 },
 
-                // Cache for events
-                listEventToBulk: [],
-
                 /**
                  * Records an event and store it into a list
                  *
@@ -5190,7 +5190,7 @@ if (typeof Piwik !== 'object') {
                  */
                 trackEventList: function (category, action, name, value) {
                     var request = createRequestEventUrl(category, action, name, value, customData);
-                    this.listEventToBulk.push(request);
+                    listEventToBulk.push(request);
                 },
 
                 /**
@@ -5200,11 +5200,11 @@ if (typeof Piwik !== 'object') {
                 bulkEventList: function() {
                     var self = this;
                     sendBulkRequest(
-                        self.listEventToBulk,
+                        listEventToBulk,
                         configTrackerPause,
                         function() {
                             // Flush event already send after the request
-                            self.listEventToBulk = [];
+                            listEventToBulk = [];
                         }
                     );
                 },
