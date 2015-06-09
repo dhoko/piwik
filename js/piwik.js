@@ -2141,6 +2141,7 @@ if (typeof Piwik !== 'object') {
                 configReferrerUrl = decodeWrapper(locationArray[2]),
 
                 enableJSErrorTracking = false,
+                enableBulkTracking = false,
 
                 defaultRequestMethod = 'GET',
 
@@ -4866,6 +4867,15 @@ if (typeof Piwik !== 'object') {
                 },
 
                 /**
+                 * Enable bulk Tracking
+                 * @param  {Boolean} isEnabled
+                 * @return {void}
+                 */
+                enableBulkTracking: function (isEnabled) {
+                    enableBulkTracking = !!isEnabled;
+                },
+
+                /**
                  * Disable automatic performance tracking
                  */
                 disablePerformanceTracking: function () {
@@ -5175,23 +5185,17 @@ if (typeof Piwik !== 'object') {
                  * @param float value (optional) The Event's value
                  */
                 trackEvent: function (category, action, name, value) {
+
+                    if(enableBulkTracking) {
+                        var request = createRequestEventUrl(category, action, name, value, customData);
+                        return listEventToBulk.push(request);
+                    }
+
                     trackCallback(function () {
                         logEvent(category, action, name, value);
                     });
                 },
 
-                /**
-                 * Records an event and store it into a list
-                 *
-                 * @param string category The Event Category (Videos, Music, Games...)
-                 * @param string action The Event's Action (Play, Pause, Duration, Add Playlist, Downloaded, Clicked...)
-                 * @param string name (optional) The Event's object Name (a particular Movie name, or Song name, or File name...)
-                 * @param float value (optional) The Event's value
-                 */
-                trackEventList: function (category, action, name, value) {
-                    var request = createRequestEventUrl(category, action, name, value, customData);
-                    listEventToBulk.push(request);
-                },
 
                 /**
                  * Send to the API each requests
@@ -5208,6 +5212,8 @@ if (typeof Piwik !== 'object') {
                         }
                     );
                 },
+
+
 
                 /**
                  * Log special pageview: Internal search
