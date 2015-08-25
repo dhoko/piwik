@@ -5429,7 +5429,7 @@ if (typeof Piwik !== 'object') {
                  * @param string name (optional) The Event's object Name (a particular Movie name, or Song name, or File name...)
                  * @param float value (optional) The Event's value
                  */
-                trackEventList: function (category, action, name, value) {
+                trackEventList: function (category, action, name, value, customData) {
                     var request = createRequestEventUrl(category, action, name, value, customData);
                     listEventToBulk.push(request);
                 },
