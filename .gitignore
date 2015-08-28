@@ -67,3 +67,5 @@ php_errors.log
 /misc/vagrant
 /.vagrant
 /plugins/.gitignore
+node_modules/
+js/bundle*
