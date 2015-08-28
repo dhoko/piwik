@@ -1994,74 +1994,7 @@ if (window && window.piwikAsyncInit) {
  * @param mixed customData
  */
 if (typeof piwik_log !== 'function') {
-    piwik_log = function (documentTitle, siteId, piwikUrl, customData) {
-        'use strict';
-
-        function getOption(optionName) {
-            try {
-                return eval('piwik_' + optionName);
-            } catch (ignore) { }
-
-            return; // undefined
-        }
-
-        // instantiate the tracker
-        var option,
-            piwikTracker = Piwik.getTracker(piwikUrl, siteId);
-
-        // initialize tracker
-        piwikTracker.setDocumentTitle(documentTitle);
-        piwikTracker.setCustomData(customData);
-
-        // handle Piwik globals
-        option = getOption('tracker_pause');
-
-        if (option) {
-            piwikTracker.setLinkTrackingTimer(option);
-        }
-
-        option = getOption('download_extensions');
-
-        if (option) {
-            piwikTracker.setDownloadExtensions(option);
-        }
-
-        option = getOption('hosts_alias');
-
-        if (option) {
-            piwikTracker.setDomains(option);
-        }
-
-        option = getOption('ignore_classes');
-
-        if (option) {
-            piwikTracker.setIgnoreClasses(option);
-        }
-
-        // track this page view
-        piwikTracker.trackPageView();
-
-        // default is to install the link tracker
-        if (getOption('install_tracker')) {
-
-            /**
-             * Track click manually (function is defined below)
-             *
-             * @param string sourceUrl
-             * @param int|string siteId
-             * @param string piwikUrl
-             * @param string linkType
-             */
-            piwik_track = function (sourceUrl, siteId, piwikUrl, linkType) {
-                piwikTracker.setSiteId(siteId);
-                piwikTracker.setTrackerUrl(piwikUrl);
-                piwikTracker.trackLink(sourceUrl, linkType);
-            };
-
-            // set-up link tracking
-            piwikTracker.enableLinkTracking();
-        }
-    };
+    window.piwik_log = require('./lib/deprecated/piwikLog');
 }
 
 /*! @license-end */
